@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Search</title>
+    <link rel="stylesheet" href="styles2.css"> <!-- Link to your CSS -->
+</head>
+<body>
+
+    <header>
+        <div class="logo">FPL Assist</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="player-search.html">Player Search</a></li>
+                <li><a href="#Predicted Points">Predicted Points</a></li>
+                <li><a href="#Team Management">Team Management</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<div class="main-content">
+    <h1>Player Search</h1>
+    <div class="dropdown">
+        <label for="team-select">Select Team:</label>
+        <select id="team-select">
+            <option value="">--Select a Team--</option>
+            <option value="teamA">Team A</option>
+            <option value="teamB">Team B</option>
+            <!-- Add more teams as needed -->
+        </select>
+    </div>
+
+    <div id="dropdown">
+        <label for="player-select">Select Player:</label>
+        <select id="player-select" disabled>
+            <option value="">--Select a Player--</option>
+        </select>
+    </div>
+
+    <div id="player-stats" class="player-stats">
+        <!-- Player stats will be displayed here -->
+    </div>
+</div>
+
+<footer>
+    <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+    </ul>
+</footer>
+
+<script src="script.js"></script> <!-- Link to your JavaScript -->
+</body>
+</html>
