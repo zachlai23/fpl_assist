@@ -33,6 +33,10 @@ nav ul li a {
     color: #1D3557; /* Navy Blue */
 }
 
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
 .main-content {
     padding: 20px;
 }

@@ -1,60 +1,29 @@
-// Sample data for players
-const playersData = {
-    teamA: [
-        { name: "Player 1", stats: "Goals: 10, Assists: 5" },
-        { name: "Player 2", stats: "Goals: 8, Assists: 3" }
-    ],
-    teamB: [
-        { name: "Player 3", stats: "Goals: 12, Assists: 4" },
-        { name: "Player 4", stats: "Goals: 5, Assists: 7" }
-    ],
-};
+// async allows function to "pause" at certain points in the code
+async function loadTeams() {
+    try {
+        // fetch - built in JS function used to make HTTP requests(like GET requests to APIs)
+        // await tells js to wait fro fetch to complete before moving on
+        const response = await fetch('http://127.0.0.1:5000/api/teams');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const teams = await response.json();    // response.josn() extracts JSON data from HTTP response
 
-// Function to populate players based on selected team
-function populatePlayers() {
-    const teamSelect = document.getElementById('team-select');
-    const playerSelect = document.getElementById('player-select');
-    const playerStats = document.getElementById('player-stats');
-
-    const selectedTeam = teamSelect.value;
-
-    // Clear the player dropdown and stats
-    playerSelect.innerHTML = '<option value="">--Select a Player--</option>';
-    playerStats.innerHTML = '';
-
-    if (selectedTeam) {
-        const players = playersData[selectedTeam];
-
-        players.forEach(player => {
+        // creates a variable for 'team-select' item in HTML
+        const teamDropdown = document.getElementById('team-select');
+        // for each team in teams, create an HTML option with the team name and append it to the dropdown
+        teams.forEach(team => {
             const option = document.createElement('option');
-            option.value = player.name;
-            option.textContent = player.name;
-            playerSelect.appendChild(option);
+            option.value = team;
+            option.textContent = team;
+            teamDropdown.appendChild(option);
         });
-
-        playerSelect.disabled = false;
-    } else {
-        playerSelect.disabled = true;
+    }
+    catch(error) {
+        console.error('Error fetching teams:', error);
     }
 }
 
-// Function to display player stats based on selected player
-function displayPlayerStats() {
-    const teamSelect = document.getElementById('team-select');
-    const playerSelect = document.getElementById('player-select');
-    const playerStats = document.getElementById('player-stats');
-
-    const selectedTeam = teamSelect.value;
-    const selectedPlayer = playerSelect.value;
-
-    if (selectedPlayer) {
-        const player = playersData[selectedTeam].find(p => p.name === selectedPlayer);
-        playerStats.innerHTML = `<h3>${player.name}</h3><p>${player.stats}</p>`;
-    } else {
-        playerStats.innerHTML = '';
-    }
-}
-
-// Event listeners
-document.getElementById('team-select').addEventListener('change', populatePlayers);
-document.getElementById('player-select').addEventListener('change', displayPlayerStats);
+document.addEventListener('DOMContentLoaded', () => {
+    loadTeams();
+});

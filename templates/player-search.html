@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Search</title>
-    <link rel="stylesheet" href="styles2.css"> <!-- Link to your CSS -->
+    <link rel="stylesheet" href="../static/css/styles2.css"> <!-- Link to your CSS -->
 </head>
 <body>
 
@@ -12,8 +12,8 @@
         <div class="logo">FPL Assist</div>
         <nav>
             <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="player-search.html">Player Search</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/player-search">Player Search</a></li>
                 <li><a href="#Predicted Points">Predicted Points</a></li>
                 <li><a href="#Team Management">Team Management</a></li>
             </ul>
@@ -26,9 +26,6 @@
         <label for="team-select">Select Team:</label>
         <select id="team-select">
             <option value="">--Select a Team--</option>
-            <option value="teamA">Team A</option>
-            <option value="teamB">Team B</option>
-            <!-- Add more teams as needed -->
         </select>
     </div>
 
@@ -51,6 +48,6 @@
     </ul>
 </footer>
 
-<script src="script.js"></script> <!-- Link to your JavaScript -->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
