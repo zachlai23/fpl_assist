@@ -1,3 +1,20 @@
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadTeams();
+
+    const teamDropdown = document.getElementById('team-select');
+    teamDropdown.addEventListener('change', (event) => {
+        const selectedTeam = event.target.value;
+
+        if(selectedTeam) {
+            loadPlayers(selectedTeam);
+        } 
+        else {
+            resetPlayerDropdown()
+        }
+    })
+});
+
 // async allows function to "pause" at certain points in the code
 async function loadTeams() {
     try {
@@ -24,6 +41,63 @@ async function loadTeams() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadTeams();
+async function loadPlayers(teamName) {
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/api/players/${teamName}`);
+        const players = await response.json();
+
+        const playerDropdown = document.getElementById('player-select');
+        resetPlayerDropdown(); // Clear previous options
+
+        players.forEach(player => {
+            const option = document.createElement('option');
+            option.value = player;
+            option.textContent = player;
+            playerDropdown.appendChild(option);
+        });
+        playerDropdown.disabled = false;
+    }
+    catch(error) {
+        console.error('Error fetching players:', error);
+    }
+}
+
+function displayPoints(message) {
+    const pointsDisplay = document.getElementById('points-display');
+    pointsDisplay.textContent = message; // Update the content
+}
+
+document.getElementById('player-select').addEventListener('change', (event) => {
+    const selectedPlayer = event.target.value;
+    if (selectedPlayer) {
+        getPredictedPoints(selectedPlayer); // Get predicted points when a player is selected
+    } else {
+        displayPoints(''); // Clear the points display if no player is selected
+    }
 });
+
+async function getPredictedPoints(playerName) {
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/api/predictedpoints/${playerName}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        // Assuming data returns an object like { player_name: 'Player A', predicted_points: 5 }
+        if (data.error) {
+            displayPoints(`Error: ${data.error}`);
+        } else {
+            displayPoints(`Predicted Points for ${data.player_name}: ${data.predicted_points}`);
+        }
+    } catch (error) {
+        console.error('Error fetching predicted points:', error);
+        displayPoints('Error fetching predicted points');
+    }
+}
+    
+function resetPlayerDropdown() {
+    const playerDropdown = document.getElementById('player-select');
+    playerDropdown.innerHTML = '<option value="">Select a player</option>';
+    playerDropdown.disabled = true; // Disable dropdown until a team is selected
+}
