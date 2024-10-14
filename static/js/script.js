@@ -88,7 +88,7 @@ async function getPredictedPoints(playerName) {
         if (data.error) {
             displayPoints(`Error: ${data.error}`);
         } else {
-            displayPoints(`Predicted Points for ${data.player_name}: ${data.predicted_points}`);
+            displayPoints(`Predicted Points for ${data.player_name} for Gameweek ${data.gw}: ${data.predicted_points}`);
         }
     } catch (error) {
         console.error('Error fetching predicted points:', error);
@@ -101,3 +101,22 @@ function resetPlayerDropdown() {
     playerDropdown.innerHTML = '<option value="">Select a player</option>';
     playerDropdown.disabled = true; // Disable dropdown until a team is selected
 }
+
+// Handle search bar
+document.getElementById('search-button').addEventListener('click', async () => {
+    const playerName = document.getElementById('player-search-input').value.trim().toLowerCase();
+
+    if(playerName) {
+        getPredictedPoints(playerName);
+    }
+    else {
+        displayPoints('Please enter a player name.');
+    }
+});
+
+// Key Handling - allows user to hit enter for search bar
+document.getElementById('player-search-input').addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        document.getElementById('search-button').click();
+    }
+});
