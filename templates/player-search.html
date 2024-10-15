@@ -23,8 +23,15 @@
 <div class="main-content">
     <h1>Player Search</h1>
 
-    <input type="text" id="player-search-input" placeholder="Search for a player" autofocus>
-    <button id="search-button">Search</button>
+    <div class="search-box">
+        <div class="row">
+            <input type="text" id="player-search-input" placeholder="Search for a player" autocomplete="off">
+            <button id="search-button">Search</button>
+        </div>
+
+        <div class="result-box">
+        </div>
+    </div>
 
     <div class="dropdown">
         <label for="team-select">Select Team:</label>

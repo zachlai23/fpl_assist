@@ -120,3 +120,38 @@ document.getElementById('player-search-input').addEventListener('keypress', (eve
         document.getElementById('search-button').click();
     }
 });
+
+// Autocomplete for search bar
+let playerRecs = ["Erling Haaland", "Adam Webster", "Kaoru Mitoma", "William Saliba", "Bukayo Saka", "Ibrahima Konate", "Cole Palmer"];
+
+const resultsBox = document.querySelector(".result-box");
+const inputBox = document.getElementById("player-search-input");
+
+inputBox.onkeyup = function() {
+    let result = [];
+    let input = inputBox.value;
+    if(input.length) {
+        result = playerRecs.filter((keyword)=>{
+            return keyword.toLowerCase().includes(input.toLowerCase());
+        });
+        displayResult(result);
+
+        if(!result.length) {
+            resultsBox.innerHTML = '';
+        }
+    }
+}
+
+// Display suggesstions for search bar
+function displayResult(result) {
+    const content = result.map((list)=>{
+        return "<li onclick=selectInput(this)>" + list + "<li>";
+    });
+
+    resultsBox.innerHTML = "<ul>" + content.join('') + "</ul>";
+}
+
+function selectInput(list) {
+    inputBox.value = list.innerHTML;
+    resultsBox.innerHTML = '';
+}

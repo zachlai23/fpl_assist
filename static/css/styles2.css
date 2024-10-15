@@ -45,6 +45,54 @@ header nav ul li a:hover {
     padding: 25px;
 }
 
+.search-box {
+    width: 600px;
+    background: #fff;
+    margin: 100px auto 0;
+    border-radius: 5px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.player-search-input {
+    flex: 1;
+    height: 50px;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+::placeholder {
+    color: #555;
+}
+
+.result-box {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.result-box ul{
+    border-top: 1px solid #999;
+    padding: 15px 10px;
+}
+
+.result-box ul li {
+    list-style: none;
+    border-radius: 3px;
+    padding: 15px 10px;
+    cursor: pointer;
+}
+
+.result-box ul li:hover {
+    background-color: #e9f3ff;
+}
+
 .player-stats {
     margin-top: 20px;
     padding: 15px;
