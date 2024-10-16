@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadTeams() {
     try {
         // fetch - built in JS function used to make HTTP requests(like GET requests to APIs)
-        // await tells js to wait fro fetch to complete before moving on
+        // await tells js to wait for fetch to complete before moving on
         const response = await fetch('http://127.0.0.1:5000/api/teams');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -122,17 +122,30 @@ document.getElementById('player-search-input').addEventListener('keypress', (eve
 });
 
 // Autocomplete for search bar
-let playerRecs = ["Erling Haaland", "Adam Webster", "Kaoru Mitoma", "William Saliba", "Bukayo Saka", "Ibrahima Konate", "Cole Palmer"];
+// let playerRecs = ["Erling Haaland", "Adam Webster", "Kaoru Mitoma", "William Saliba", "Bukayo Saka", "Ibrahima Konate", "Cole Palmer"];
+let player_names = [];
+// Fetch player names from the Flask API
+async function fetchPlayerNames() {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/api/players');
+        player_names = await response.json();  // Convert to JSON and store in playerNames
+    } catch (error) {
+        console.error("Error fetching player names:", error);
+    }
+}
+
+// Call the function to load player names when the page loads
+fetchPlayerNames();
 
 const resultsBox = document.querySelector(".result-box");
 const inputBox = document.getElementById("player-search-input");
 
 inputBox.onkeyup = function() {
     let result = [];
-    let input = inputBox.value;
+    let input = inputBox.value.trim().toLowerCase();
     if(input.length) {
-        result = playerRecs.filter((keyword)=>{
-            return keyword.toLowerCase().includes(input.toLowerCase());
+        result = player_names.filter((keyword)=>{
+            return keyword.toLowerCase().startsWith(input);
         });
         displayResult(result);
 
@@ -145,7 +158,7 @@ inputBox.onkeyup = function() {
 // Display suggesstions for search bar
 function displayResult(result) {
     const content = result.map((list)=>{
-        return "<li onclick=selectInput(this)>" + list + "<li>";
+        return "<li onclick=selectInput(this)>" + list + "</li>";
     });
 
     resultsBox.innerHTML = "<ul>" + content.join('') + "</ul>";
