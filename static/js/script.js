@@ -69,6 +69,8 @@ function displayPoints(message) {
 
 document.getElementById('player-select').addEventListener('change', (event) => {
     const selectedPlayer = event.target.value;
+    const gw = document.getElementById('gameweek').value;
+
     if (selectedPlayer) {
         getPredictedPoints(selectedPlayer); // Get predicted points when a player is selected
     } else {
@@ -96,6 +98,17 @@ async function getPredictedPoints(playerName) {
     }
 }
     
+document.getElementById('player-select').addEventListener('change', (event) => {
+    const selectedPlayer = event.target.value; // Get the selected player // Get the value from the gameweek dropdown
+
+    if (selectedPlayer) {
+        console.log(`Fetching points for ${selectedPlayer}`); // Debug log
+        getPredictedPoints(selectedPlayer); // Fetch predicted points for the selected player and gameweek
+    } else {
+        displayPoints(''); // Clear the points display if no player is selected
+    }
+});
+
 function resetPlayerDropdown() {
     const playerDropdown = document.getElementById('player-select');
     playerDropdown.innerHTML = '<option value="">Select a player</option>';
@@ -113,6 +126,7 @@ document.getElementById('search-button').addEventListener('click', async () => {
         displayPoints('Please enter a player name.');
     }
 });
+
 
 // Key Handling - allows user to hit enter for search bar
 document.getElementById('player-search-input').addEventListener('keypress', (event) => {
