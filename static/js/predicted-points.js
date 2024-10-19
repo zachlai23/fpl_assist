@@ -90,7 +90,7 @@ async function getPredictedPoints(playerName) {
         if (data.error) {
             displayPoints(`Error: ${data.error}`);
         } else {
-            displayPoints(`Predicted Points for ${data.player_name} for Gameweek ${data.gw}: ${data.predicted_points}`);
+            displayPoints(`Predicted Points for ${data.player_name} for Gameweek ${data.gw+1}: ${data.predicted_points}`);
         }
     } catch (error) {
         console.error('Error fetching predicted points:', error);
