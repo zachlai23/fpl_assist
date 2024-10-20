@@ -67,14 +67,34 @@ function displayPoints(message) {
     pointsDisplay.textContent = message; // Update the content
 }
 
+function displayPrice(message) {
+    const priceDisplay = document.getElementById('price-display');
+    priceDisplay.textContent = message; // Update the content
+}
+
+function displayTeam(message) {
+    const teamDisplay = document.getElementById('team-display');
+    teamDisplay.textContent = message; // Update the content
+}
+
+function displayPastPoints(message) {
+    const pastPointsDisplay = document.getElementById('past-points-display');
+    pastPointsDisplay.textContent = message; // Update the content
+}
+
 document.getElementById('player-select').addEventListener('change', (event) => {
     const selectedPlayer = event.target.value;
-    const gw = document.getElementById('gameweek').value;
 
     if (selectedPlayer) {
         getPredictedPoints(selectedPlayer); // Get predicted points when a player is selected
+        getPlayerValue(selectedPlayer);
+        getPlayerTeam(selectedPlayer);
+        getPlayerPastPoints(selectedPlayer);
     } else {
         displayPoints(''); // Clear the points display if no player is selected
+        displayTeam('');
+        displayPrice('');
+        displayPastPoints('');
     }
 });
 
@@ -97,17 +117,49 @@ async function getPredictedPoints(playerName) {
         displayPoints('Error fetching predicted points');
     }
 }
-    
-document.getElementById('player-select').addEventListener('change', (event) => {
-    const selectedPlayer = event.target.value; // Get the selected player // Get the value from the gameweek dropdown
 
-    if (selectedPlayer) {
-        console.log(`Fetching points for ${selectedPlayer}`); // Debug log
-        getPredictedPoints(selectedPlayer); // Fetch predicted points for the selected player and gameweek
-    } else {
-        displayPoints(''); // Clear the points display if no player is selected
+async function getPlayerValue(playerName) {
+    const response = await fetch(`http://127.0.0.1:5000/api/prices/${playerName}`);
+    if(!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
     }
-});
+    const data = await response.json();
+
+    if(data.error) {
+        displayPrice(`Error ${data.error}`);
+    } else {
+        displayPrice(`Price : ${data.Price}`);
+    }
+}
+
+async function getPlayerTeam(playerName) {
+    const response = await fetch(`http://127.0.0.1:5000/api/team/${playerName}`);
+    if(!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    if(data.error) {
+        displayTeam(`Error ${data.error}`);
+    } else {
+        displayTeam(`Team : ${data.Team}`);
+    }
+}
+
+async function getPlayerPastPoints(playerName) {
+    const response = await fetch(`http://127.0.0.1:5000/api/past-points/${playerName}`);
+    if(!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    if(data.error) {
+        displayPastPoints(`Error ${data.error}`);
+    } else {
+        displayPastPoints(`Past Points: : ${data.PastPoints}`);
+    }
+}
+
 
 function resetPlayerDropdown() {
     const playerDropdown = document.getElementById('player-select');
@@ -121,6 +173,9 @@ document.getElementById('search-button').addEventListener('click', async () => {
 
     if(playerName) {
         getPredictedPoints(playerName);
+        getPlayerTeam(playerName);
+        getPlayerValue(playerName);
+        getPlayerPastPoints(playerName);
     }
     else {
         displayPoints('Please enter a player name.');
