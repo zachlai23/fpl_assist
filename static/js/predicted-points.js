@@ -1,5 +1,9 @@
-let team = []
-let currentPlayer = null
+const MAX_BUDGET = 100;
+
+let team = [];
+let teamPrice = 0;
+let currentPlayer = null;
+
 
 document.addEventListener('DOMContentLoaded', () => {
     loadTeams();
@@ -200,8 +204,9 @@ function selectInput(list) {
 
 function addToTeam() {
     if (currentPlayer && !team.includes(currentPlayer)) {
-        currentPlayer.name = capitalizeName(currentPlayer.name)
+        currentPlayer.name = capitalizeName(currentPlayer.name);
         team.push(currentPlayer);
+        teamPrice += currentPlayer.price;
 
         displayTeam();
     } else {
@@ -219,19 +224,24 @@ function displayTeam() {
 
     // For each player in team lsit create a list element and add
     team.forEach((player, index) => {
-        const playerElement = document.createElement("div");
+        if(teamPrice + player.price < MAX_BUDGET) {
+            const playerElement = document.createElement("div");
 
-        playerElement.classList.add('team-player');
-        
-        playerElement.innerHTML = `
-            <span>${player.name} - ${player.position} - Predicted Points: ${player.predictedPoints} - Price: ${player.price}</span>
-            <button onclick="removePlayer(${index})">Remove</button>
-        `;
+            playerElement.classList.add('team-player');
+            
+            playerElement.innerHTML = `
+                <span>${player.name} - ${player.position} - Predicted Points: ${player.predictedPoints} - Price: ${player.price}</span>
+                <button onclick="removePlayer(${index})">Remove</button>
+            `;
+    
+            teamContainer.appendChild(playerElement);
+    
+            teamPrice += player.price;
+            teamPredictedPoints += player.predictedPoints;
+        } else {
+            team.splice(index, 1);
+        }
 
-        teamContainer.appendChild(playerElement);
-
-        teamPrice += player.price;
-        teamPredictedPoints += player.predictedPoints;
     });
 
     // Update team price
@@ -244,7 +254,6 @@ function displayTeam() {
     const predictedPointsDisplay = document.getElementById("user-team-predicted-points");
     predictedPointsDisplay.textContent = `Team Predicted Points: ${teamPredictedPoints}`;
 }
-
 
 function removePlayer(index) {
     team.splice(index, 1);
