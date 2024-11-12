@@ -199,7 +199,7 @@ function selectInput(list) {
 }
 
 function addToTeam() {
-    if (currentPlayer) {
+    if (currentPlayer && !team.includes(currentPlayer)) {
         currentPlayer.name = capitalizeName(currentPlayer.name)
         team.push(currentPlayer);
 
@@ -211,17 +211,24 @@ function addToTeam() {
 
 // Display users team from 'add team' button
 function displayTeam() {
-    const teamList = document.getElementById("team-list")
-    teamList.innerHTML = '';
+    const teamContainer = document.getElementById("team-container")
+    teamContainer.innerHTML = '';
 
     let teamPrice = 0;
     let teamPredictedPoints = 0;
 
     // For each player in team lsit create a list element and add
-    team.forEach(player => {
-        const listItem = document.createElement("li");
-        listItem.textContent = `${player.name} - ${player.position} - Predicted Points: ${player.predictedPoints} - Price: ${player.price}`;
-        teamList.appendChild(listItem);
+    team.forEach((player, index) => {
+        const playerElement = document.createElement("div");
+
+        playerElement.classList.add('team-player');
+        
+        playerElement.innerHTML = `
+            <span>${player.name} - ${player.position} - Predicted Points: ${player.predictedPoints} - Price: ${player.price}</span>
+            <button onclick="removePlayer(${index})">Remove</button>
+        `;
+
+        teamContainer.appendChild(playerElement);
 
         teamPrice += player.price;
         teamPredictedPoints += player.predictedPoints;
@@ -237,6 +244,21 @@ function displayTeam() {
     const predictedPointsDisplay = document.getElementById("user-team-predicted-points");
     predictedPointsDisplay.textContent = `Team Predicted Points: ${teamPredictedPoints}`;
 }
+
+
+function removePlayer(index) {
+    team.splice(index, 1);
+    displayTeam(); 
+}
+
+function resetTeam() {
+    team = [];
+    displayTeam();
+}
+
+document.getElementById("resetTeam-button").addEventListener("click",() => {
+    resetTeam();
+});
 
 // Add current selected player to team when 'add to team' button is clicked
 document.getElementById("addToTeam-button").addEventListener("click", () => {
