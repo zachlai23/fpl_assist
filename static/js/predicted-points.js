@@ -1,4 +1,6 @@
 const MAX_BUDGET = 100;
+const MAX_PLAYERS = 15;
+const POS_LIMITS ={"GK": 2, "DEF": 5, "MID": 5, "FWD": 3}
 
 let team = [];
 let teamPrice = 0;
@@ -96,22 +98,25 @@ document.getElementById('player-select').addEventListener('change', (event) => {
 
 async function getPlayerData(playerName) {
     try {
-        const [pointsRes, priceRes, positionRes] = await Promise.all([
+        const [pointsRes, priceRes, positionRes, teamRes] = await Promise.all([
             fetch(`http://127.0.0.1:5000/api/predictedpoints/${playerName}`),
             fetch(`http://127.0.0.1:5000/api/prices/${playerName}`),
-            fetch(`http://127.0.0.1:5000/api/position/${playerName}`)
+            fetch(`http://127.0.0.1:5000/api/position/${playerName}`),
+            fetch(`http://127.0.0.1:5000/api/team/${playerName}`)
         ]);
 
-        if (!pointsRes.ok || !priceRes.ok || !positionRes.ok) {
+        if (!pointsRes.ok || !priceRes.ok || !positionRes.ok || !teamRes.ok) {
             throw new Error('One or more requests failed');
         }
 
         const pointsData = await pointsRes.json();
         const priceData = await priceRes.json();
         const positionData = await positionRes.json();
+        const teamData = await teamRes.json();
 
         currentPlayer = {
             name: pointsData.player_name,
+            team: teamData.team,
             predictedPoints: pointsData.predicted_points,
             price: priceData.price,
             position: positionData.position
@@ -202,13 +207,27 @@ function selectInput(list) {
     resultsBox.innerHTML = '';
 }
 
+function countPlayersFromSameTeam(teamName) {
+    return team.filter(player => player.team === teamName).length;
+}
+
+function countPlayersByPosition(position) {
+    return team.filter(player => player.position === position).length;
+}
+
 function addToTeam() {
     if (currentPlayer && !team.includes(currentPlayer)) {
-        currentPlayer.name = capitalizeName(currentPlayer.name);
-        team.push(currentPlayer);
-        teamPrice += currentPlayer.price;
+        if(countPlayersFromSameTeam(currentPlayer.team) < 3 
+            && team.length < MAX_PLAYERS 
+            && countPlayersByPosition(currentPlayer.position) < POS_LIMITS[currentPlayer.position]
+        ) {
+            currentPlayer.name = capitalizeName(currentPlayer.name);
+            team.push(currentPlayer);
+            teamPrice += currentPlayer.price;
+    
+            displayTeam();
+        }
 
-        displayTeam();
     } else {
         console.log("No current player");
     }
